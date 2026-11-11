@@ -1,0 +1,17 @@
+{
+  "about": "Shared field names. Forms that use these exact names can be combined across organisations. Labels can be in any language; names never change.",
+  "fields": {
+    "state":        {"type": "text",       "list": "geography",  "label": "State"},
+    "district":     {"type": "text",       "list": "geography",  "label": "District"},
+    "block":        {"type": "text",       "list": "geography",  "label": "Block"},
+    "village":      {"type": "text",       "list": "geography",  "label": "Village"},
+    "village_id":   {"type": "text",       "list": "geography",  "label": "Village ID"},
+    "household_id": {"type": "text",       "list": "households", "label": "Household ID"},
+    "head_name":    {"type": "text",       "list": "households", "label": "Name of household head"},
+    "phone":        {"type": "text",       "list": "households", "label": "Phone number"},
+    "member_id":    {"type": "text",       "list": "members",    "label": "Member ID"},
+    "name":         {"type": "text",       "list": "members",    "label": "Member name"},
+    "sex":          {"type": "select_one", "list": "members",    "label": "Sex"},
+    "age":          {"type": "integer",    "list": "members",    "label": "Age (years)"}
+  }
+}

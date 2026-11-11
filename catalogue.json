@@ -1,0 +1,11 @@
+{
+  "forms": [
+    {
+      "id": "household_survey",
+      "name": "Household survey",
+      "version": "1.0.0",
+      "description": "Registers a household and its members: village, head of household, main income, land, and each member's sex and age, with GPS and a photo. Adds each household to the 'households' list for follow-up forms.",
+      "uses_entities": []
+    }
+  ]
+}

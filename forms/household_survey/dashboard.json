@@ -1,0 +1,28 @@
+{
+  "name": "Household survey",
+  "about": "{table} becomes the form's table, e.g. p1_household_survey; repeat tables add __<repeat>. Cards count approved submissions only. Grid is 24 columns wide. ODK stores calculate fields as text: cast them (household_size::numeric).",
+  "cards": [
+    {"name": "Households", "display": "scalar", "col": 0, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS households FROM {table} WHERE review_state = 'approved'"},
+    {"name": "People in these households", "display": "scalar", "col": 6, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS people FROM {table}__members m JOIN {table} h ON h.submission_id = m.submission_id WHERE h.review_state = 'approved'"},
+    {"name": "Average household size", "display": "scalar", "col": 12, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT round(avg(household_size::numeric), 1) AS average_size FROM {table} WHERE review_state = 'approved'"},
+    {"name": "Waiting for review", "display": "scalar", "col": 18, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS waiting FROM {table} WHERE review_state IN ('received', 'edited')"},
+    {"name": "Households registered per week", "display": "line", "col": 0, "row": 3, "w": 12, "h": 6,
+     "sql": "SELECT date_trunc('week', submitted_at)::date AS week, count(*) AS households FROM {table} WHERE review_state = 'approved' GROUP BY 1 ORDER BY 1"},
+    {"name": "Households by village", "display": "bar", "col": 12, "row": 3, "w": 12, "h": 6,
+     "sql": "SELECT village, count(*) AS households FROM {table} WHERE review_state = 'approved' GROUP BY 1 ORDER BY 2 DESC"},
+    {"name": "Main source of income", "display": "pie", "col": 0, "row": 9, "w": 8, "h": 6,
+     "sql": "SELECT main_income, count(*) AS households FROM {table} WHERE review_state = 'approved' GROUP BY 1 ORDER BY 2 DESC"},
+    {"name": "Members by age group and sex", "display": "bar", "col": 8, "row": 9, "w": 8, "h": 6,
+     "viz": {"graph.dimensions": ["age_group", "sex"], "graph.metrics": ["people"]},
+     "sql": "SELECT CASE WHEN m.age < 15 THEN '0-14' WHEN m.age < 60 THEN '15-59' ELSE '60+' END AS age_group, m.sex, count(*) AS people FROM {table}__members m JOIN {table} h ON h.submission_id = m.submission_id WHERE h.review_state = 'approved' GROUP BY 1, 2 ORDER BY 1, 2"},
+    {"name": "Household locations", "display": "map", "col": 16, "row": 9, "w": 8, "h": 6,
+     "viz": {"map.type": "pin", "map.latitude_column": "location_latitude", "map.longitude_column": "location_longitude"},
+     "sql": "SELECT household_id, village, location_latitude, location_longitude FROM {table} WHERE review_state = 'approved' AND location_latitude IS NOT NULL"},
+    {"name": "Latest households", "display": "table", "col": 0, "row": 15, "w": 24, "h": 6,
+     "sql": "SELECT submitted_at, household_id, village, household_size, main_income, submitted_by FROM {table} WHERE review_state = 'approved' ORDER BY submitted_at DESC LIMIT 50"}
+  ]
+}
