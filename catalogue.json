@@ -3,9 +3,16 @@
     {
       "id": "household_survey",
       "name": "Household survey",
+      "version": "1.1.0",
+      "description": "Registers a household and its members: district, block and village from your village list, head of household, main income, land, and each member's sex and age, with GPS and a photo. Adds the household and its members to the 'households' and 'members' lists for follow-up forms.",
+      "uses_entities": ["districts", "blocks", "villages"]
+    },
+    {
+      "id": "household_visit",
+      "name": "Household visit",
       "version": "1.0.0",
-      "description": "Registers a household and its members: village, head of household, main income, land, and each member's sex and age, with GPS and a photo. Adds each household to the 'households' list for follow-up forms.",
-      "uses_entities": []
+      "description": "A follow-up visit to a household already on the list: pick district, block, village and household, then record who was home, main income now, notes, and a new phone number if it changed (updates the household list).",
+      "uses_entities": ["districts", "blocks", "villages", "households"]
     }
   ]
 }

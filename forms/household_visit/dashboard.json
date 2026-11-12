@@ -1,0 +1,20 @@
+{
+  "name": "Household visits",
+  "about": "{table} becomes the form's table, e.g. p1_household_visit. Cards count approved submissions only. Grid is 24 columns wide.",
+  "cards": [
+    {"name": "Visits", "display": "scalar", "col": 0, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS visits FROM {table} WHERE review_state = 'approved'"},
+    {"name": "Households visited", "display": "scalar", "col": 6, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(DISTINCT household_id) AS households FROM {table} WHERE review_state = 'approved'"},
+    {"name": "Head of household met", "display": "scalar", "col": 12, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT round(100.0 * avg(CASE WHEN met_head = 'yes' THEN 1 ELSE 0 END)) || '%' AS met FROM {table} WHERE review_state = 'approved'"},
+    {"name": "Waiting for review", "display": "scalar", "col": 18, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS waiting FROM {table} WHERE review_state IN ('received', 'edited')"},
+    {"name": "Visits per week", "display": "line", "col": 0, "row": 3, "w": 12, "h": 6,
+     "sql": "SELECT date_trunc('week', submitted_at)::date AS week, count(*) AS visits FROM {table} WHERE review_state = 'approved' GROUP BY 1 ORDER BY 1"},
+    {"name": "Main source of income now", "display": "pie", "col": 12, "row": 3, "w": 12, "h": 6,
+     "sql": "SELECT main_income_now, count(*) AS visits FROM {table} WHERE review_state = 'approved' GROUP BY 1 ORDER BY 2 DESC"},
+    {"name": "Latest visits", "display": "table", "col": 0, "row": 9, "w": 24, "h": 6,
+     "sql": "SELECT submitted_at, household_id, village, met_head, people_present, main_income_now, submitted_by FROM {table} WHERE review_state = 'approved' ORDER BY submitted_at DESC LIMIT 50"}
+  ]
+}

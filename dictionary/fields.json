@@ -12,6 +12,7 @@
     "member_id":    {"type": "text",       "list": "members",    "label": "Member ID"},
     "name":         {"type": "text",       "list": "members",    "label": "Member name"},
     "sex":          {"type": "select_one", "list": "members",    "label": "Sex"},
-    "age":          {"type": "integer",    "list": "members",    "label": "Age (years)"}
+    "age":          {"type": "integer",    "list": "members",    "label": "Age (years)"},
+    "birth_year":   {"type": "integer",    "list": "members",    "label": "Year of birth"}
   }
 }

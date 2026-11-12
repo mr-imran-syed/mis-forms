@@ -20,5 +20,19 @@ forms/<form_id>/dashboard.json # Metabase cards as SQL; {table} becomes the form
    Panels see it within 10 minutes; existing forms show **Update**.
 
 `uses_entities` lists entity lists (e.g. `households`) a form reads with `select_one_from_file households.csv`.
-The panel creates any that are missing before uploading the form. Lists a form *creates* (its `entities` sheet) are
-made by ODK itself.
+The panel creates any that are missing, with their properties, before uploading the form. Lists a form *creates*
+(its `entities` sheet) are made by ODK itself.
+
+Lists the panel fills from its Excel import (Data page), with the properties forms can filter and look up on:
+
+| List | Properties |
+| --- | --- |
+| districts | state, district |
+| blocks | state, district, block |
+| villages | state, district, block, village, village_id |
+| households | household_id, head_name, phone, village, village_id |
+| members | member_id, household_id, sex, birth_year (the label is the member's name) |
+
+Cascade pattern (copy from `household_visit`): `select_one_from_file districts.csv` with `parameters` `value=district`,
+then `blocks.csv` with `choice_filter` `district=${district}`, then `villages.csv` with
+`district=${district} and block=${block}` and `value=village_id`.
