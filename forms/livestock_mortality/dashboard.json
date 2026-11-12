@@ -1,0 +1,27 @@
+{
+  "name": "Livestock mortality",
+  "about": "{table} is the report table (one row per report), {table}__deaths has one row per animal that died. Approved reports only. Grid is 24 columns wide.",
+  "cards": [
+    {"name": "Animals died", "display": "scalar", "col": 0, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS deaths FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved'"},
+    {"name": "Mortality rate", "display": "scalar", "col": 6, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT round(100.0 * (SELECT count(*) FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved') / nullif(sum(herd_size), 0), 1) || '%' AS mortality_rate FROM {table} WHERE review_state = 'approved'"},
+    {"name": "Households reporting", "display": "scalar", "col": 12, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(DISTINCT household_id) AS households FROM {table} WHERE review_state = 'approved'"},
+    {"name": "Waiting for review", "display": "scalar", "col": 18, "row": 0, "w": 6, "h": 3,
+     "sql": "SELECT count(*) AS waiting FROM {table} WHERE review_state IN ('received', 'edited')"},
+    {"name": "Deaths by cause", "display": "pie", "col": 0, "row": 3, "w": 8, "h": 6,
+     "sql": "SELECT d.cause, count(*) AS deaths FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved' GROUP BY 1 ORDER BY 2 DESC"},
+    {"name": "Deaths by animal", "display": "bar", "col": 8, "row": 3, "w": 8, "h": 6,
+     "sql": "SELECT d.species, count(*) AS deaths FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved' GROUP BY 1 ORDER BY 2 DESC"},
+    {"name": "Deaths by sex and age (where recorded)", "display": "bar", "col": 16, "row": 3, "w": 8, "h": 6,
+     "viz": {"graph.dimensions": ["age_class", "sex"], "graph.metrics": ["deaths"]},
+     "sql": "SELECT coalesce(d.age_class, 'not recorded') AS age_class, coalesce(d.sex, 'not recorded') AS sex, count(*) AS deaths FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved' GROUP BY 1, 2 ORDER BY 1, 2"},
+    {"name": "Deaths per month", "display": "line", "col": 0, "row": 9, "w": 12, "h": 6,
+     "sql": "SELECT date_trunc('month', d.death_date)::date AS month, count(*) AS deaths FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved' GROUP BY 1 ORDER BY 1"},
+    {"name": "Deaths by village", "display": "bar", "col": 12, "row": 9, "w": 12, "h": 6,
+     "sql": "SELECT r.village, count(*) AS deaths FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved' GROUP BY 1 ORDER BY 2 DESC"},
+    {"name": "Latest deaths reported", "display": "table", "col": 0, "row": 15, "w": 24, "h": 6,
+     "sql": "SELECT d.death_date, r.household_id, r.village, d.species, d.cause, d.sex, d.age_class, r.herd_size FROM {table}__deaths d JOIN {table} r ON r.submission_id = d.submission_id WHERE r.review_state = 'approved' ORDER BY d.death_date DESC LIMIT 50"}
+  ]
+}

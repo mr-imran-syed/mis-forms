@@ -13,6 +13,13 @@
       "version": "1.0.0",
       "description": "A follow-up visit to a household already on the list: pick district, block, village and household, then record who was home, main income now, notes, and a new phone number if it changed (updates the household list).",
       "uses_entities": ["districts", "blocks", "villages", "households"]
+    },
+    {
+      "id": "livestock_mortality",
+      "name": "Livestock mortality (demo)",
+      "version": "1.0.0",
+      "description": "Demo of need-to-have vs nice-to-have data. Pick a household, give its herd size, then add each animal that died: animal, date and cause are required; sex, age and a photo are optional. The dashboard shows deaths, mortality rate, causes, animals and months.",
+      "uses_entities": ["districts", "blocks", "villages", "households"]
     }
   ]
 }
